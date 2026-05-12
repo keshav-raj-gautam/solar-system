@@ -42,11 +42,14 @@ jobs:
             - name: Run unit test
               run: npm test  
 
-            - name: Archive test result
-              uses: actions/upload-artifact@v7
-              with:
-                name: test-results-${{ matrix.nodejs_version }}-${{ matrix.os }}
-                path: test-results-${{matrix.nodejs_version}}-${{matrix.os}}.xml
+            - name: Show generated files
+              run: |
+                find . -type f  
+            # - name: Archive test result
+            #   uses: actions/upload-artifact@v7
+            #   with:
+            #     name: Mocha-test-result
+            #     path: test-results-${{matrix.nodejs_version}}-${{matrix.os}}.xml
                 
 
     
