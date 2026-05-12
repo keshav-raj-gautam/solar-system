@@ -42,14 +42,39 @@ jobs:
             - name: Run unit test
               run: npm test  
 
-            - name: Show generated files
-              run: |
-                find . -type f  
+            # - name: Show generated files
+            #   run: |
+            #     find . -type f  
             # - name: Archive test result
             #   uses: actions/upload-artifact@v7
             #   with:
             #     name: Mocha-test-result
             #     path: test-results-${{matrix.nodejs_version}}-${{matrix.os}}.xml
+
+    code-coverage:
+        needs: unit-testing
+        name: Code Coverage
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v6
+
+          - name: Setup Nodejs 
+            uses: actions/setup-node@v6
+            with:
+                node-version: 18
+
+          - name: Install dependencies
+            run: npm install  
+
+          - name: Check code coverage
+            run: npm run coverage  
                 
+          - name: Upload artifact
+            uses: actions/upload-artifact@v7
+            with:
+                name: Code-coverage-result
+                path: coverage
+                retention-days: 5  
 
     
