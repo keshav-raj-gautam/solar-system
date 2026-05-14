@@ -20,7 +20,7 @@ jobs:
             # max-parallel: 1
             matrix:
               nodejs_version: [18, 19, 20]
-              os: [ubuntu-latest, macos-latest]
+              os: [ubuntu-latest]
 
               exclude:
                 - nodejs_version: 18
@@ -105,6 +105,25 @@ jobs:
             username: ${{vars.DOCKERHUB_USERNAME}}
             password: ${{secrets.DOCKERHUB_PASSWORD}}
 
-        # - name: Docker build
-        #   run: docker buildd -t .
+        - name: Docker build
+          uses: docker/build-push-action@v7
+          with: 
+            push: false
+            context: .
+            tags: ${{vars.DOCKERHUB_USERNAME}}/solar-system:${{github.sha}}
+
+        - name: Docker Image testing
+          run: |
+           docker images
+           docker run --name solar-system-app -d 
+           -e MONGO_URI=$MONGO_URI \
+           -e MONGO_USERNAME=$MONGO_USERNAME
+           -e MONGO_PASSWORD=$MONGO_PASSWORD
+           ${{vars.DOCKERHUB_USERNAME}}/solar-syatem:${{github.sha}} \
+
+           export IP=${docker inspect -f '{{range .NetworkSettings.Networks}}{{IPAddress}}{{end}}' solar-system-app}
+           echo $IP
+           wget -q -O - 127.0.0.1:3000/live | grep live
+            
+
 
