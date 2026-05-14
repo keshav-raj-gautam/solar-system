@@ -59,7 +59,7 @@ jobs:
 
     code-coverage:
         
-        needs: unit-testing
+        # needs: unit-testing
         name: Code Coverage
         runs-on: ubuntu-latest
         steps:
@@ -76,7 +76,7 @@ jobs:
             with:
                 path: node-modules
                 key: ${{runner.os}}-node-modules-${{hashFiles('package-lock.json')}}
-                
+
           - name: Install dependencies
             run: npm install  
 
