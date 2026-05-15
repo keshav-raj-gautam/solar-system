@@ -73,14 +73,27 @@ jobs:
         # needs: unit-testing
         name: Code Coverage
         runs-on: ubuntu-latest
+        env:
+         MONGO_URI: 'mongodb://mongo:27017/superData'
+         MONGO_USERNAME: non-prod-user
+         MONGO_PASSWORD: non-prod-password 
+
+        container: 
+          image: node:18
+
+        services:
+          mongo-db:
+            image: siddharth67/mongo-db:non-prod  # No port mapping because it is cont-to-cont network
+            options:
+              --name mongo
         steps:
           - name: Checkout
             uses: actions/checkout@v6
 
-          - name: Setup Nodejs 
-            uses: actions/setup-node@v6
-            with:
-                node-version: 18
+          # - name: Setup Nodejs 
+          #   uses: actions/setup-node@v6
+          #   with:
+          #       node-version: 18
 
           - name: cache npm dependencies
             uses: actions/cache@v5
