@@ -14,19 +14,30 @@ env:
 jobs:
     unit-testing:
         name: Unit Testing
-        
+
+        env:
+         MONGO_URI: 'mongodb://localhost:27017/superData'
+         MONGO_USERNAME: non-prod-user
+         MONGO_PASSWORD: non-prod-password 
+         
         strategy:
-            fail-fast: false
+            fail-fast: false                        # Prevents github from cancelling in progress job if any matrix job fails
             # max-parallel: 1
             matrix:
               nodejs_version: [18, 19, 20]
               os: [ubuntu-latest]
 
-              exclude:
-                - nodejs_version: 18
-                  os: macos-latest      
+              # exclude:
+              #   - nodejs_version: 18
+              #     os: macos-latest      
         
-        runs-on: ${{matrix.os}}          
+        runs-on: ${{matrix.os}}   
+        services:
+          mongo-db:
+            image: siddharth67/mongo-db:non-prod
+            ports: 
+              - 27017:27017
+
         steps:
             - name: Checkout Repository
               uses: actions/checkout@v6
@@ -37,7 +48,7 @@ jobs:
                 node-version: ${{matrix.nodejs_version}}
  
             - name: cache npm dependencies
-              uses: actions/cache@v5
+              uses: actions/cache@v5               # stores dependencies on cache to reduce job time
               with:
                 path: node_modules
                 key: ${{runner.os}}-node-modules-${{hashFiles('package-lock.json')}}
