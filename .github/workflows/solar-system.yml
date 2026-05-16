@@ -267,7 +267,7 @@ jobs:
 
       outputs: 
         APP_INGRESS_URL: ${{steps.set-ingress-host-address.outputs.APP_INGRESS_HOST}}
-      name: Dev Deployment
+      name: PROD Deployment
       runs-on: ubuntu-latest
       steps:
         
