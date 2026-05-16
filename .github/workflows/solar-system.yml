@@ -171,6 +171,10 @@ jobs:
     dev-deploy:
 
       needs: docker
+      environment: 
+        name: development
+        url: https://${{steps.set-ingress-host-address.outputs.APP_INGRESS_HOST}}
+
       outputs: 
         APP_INGRESS_URL: ${{steps.set-ingress-host-address.outputs.APP_INGRESS_HOST}}
       name: Dev Deployment
@@ -239,7 +243,7 @@ jobs:
           run: echo "APP_INGRESS_HOST=$(kubectl -n ${{vars.NAMESPACE}} get ingress -o jsonpath="{.items[0].spec.tls[0].hosts[0]}")" >> $GITHUB_OUTPUT 
     
     Intergration-test:
-      name: Integration Test
+      name: Dev Integration Test
       needs: dev-deploy
       runs-on: ubuntu-latest
       steps:
