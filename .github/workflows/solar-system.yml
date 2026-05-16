@@ -169,7 +169,10 @@ jobs:
               ghcr.io/${{github.repository_owner}}/solar-system:${{github.sha}}
             
     dev-deploy:
+
       needs: docker
+      outputs: 
+        APP_INGRESS_URL: ${{steps.set-ingress-host-address.outputs.APP_INGRESS_HOST}}
       name: Dev Deployment
       runs-on: ubuntu-latest
       steps:
@@ -232,7 +235,22 @@ jobs:
             kubectl apply -f kubernetes/development
 
         - name: Set app ingress host
-          run: echo "APP_INGRESS_HOST==$(kubectl -n ${{vars.NAMESPACE}} get ingress -o jsonpath="{.items[0].spec.tls[0].hosts[0]}")"   
-            
+          id: set-ingress-host-address
+          run: echo "APP_INGRESS_HOST=$(kubectl -n ${{vars.NAMESPACE}} get ingress -o jsonpath="{.items[0].spec.tls[0].hosts[0]}")" >> $GITHUB_OUTPUT 
+    
+    Intergration-test:
+      name: Integration Test
+      needs: dev-deploy
+      runs-on: ubuntu-latest
+      steps:
+       - name: Test URL output using curl and JQ
+         env:
+          URL: ${{needs.dev-deploy.outputs.APP_INGRESS_URL}}
+         run: |
+           echo $URL
+           echo "----------------------------------------------------"
+           curl https://$URL/live -s -k | jq -r .status | grep -i live
+
+
 
 
