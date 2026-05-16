@@ -300,7 +300,7 @@ jobs:
           with:
             tokenPrefix: '${'
             tokenSuffix: '}'
-            files: '["kubernetes/production/*.yaml"]'
+            files: '["kubernetes/staging/*.yaml"]'
           env:
             NAMESPACE: ${{vars.NAMESPACE}}
             REPLICAS: ${{vars.REPLICAS}}
@@ -308,7 +308,7 @@ jobs:
             INGRESS_IP: ${{env.INGRESS_IP}}
 
         - name: Check manifest
-          run: cat kubernetes/production/*.yaml  
+          run: cat kubernetes/staging/*.yaml  
 
         - name: Create Namespace
           run: |
@@ -326,7 +326,7 @@ jobs:
 
         - name: Deploy to PROD env
           run: |
-            kubectl apply -f kubernetes/development
+            kubectl apply -f kubernetes/staging
 
         - name: Set app ingress host
           id: set-ingress-host-address
