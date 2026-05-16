@@ -196,7 +196,7 @@ jobs:
            kubectl get nodes  
 
         - name: Get Ingress IP
-          run: kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')   
+          run: kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}'  
         
         - name: Fetch Ingress IP
           run: echo "INGRESS_IP=$(kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.status.loadBalancer.ingress[0].ip}')" >> $GITHUB_ENV
